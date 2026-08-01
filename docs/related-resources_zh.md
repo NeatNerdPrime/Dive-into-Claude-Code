@@ -21,6 +21,6 @@
 |:---|:---|
 | [Agent Systems Design Space 新进展资料记录](./agent-design-space-source-notes_zh.md) | 记录与 agent-system design space 高度相关的高信号资料；每条来源保留发布年月，方便后续持续追加。重点是 agent operating layer、sandbox、context/memory、tool connectivity、人类控制面、trace/eval 改进循环。 |
 
-> **维护提示：** 新条目请加到 `README.md` 与 `README_zh.md`，不要加在本文件。
+> **想补充资源？** 欢迎参与 —— 见[参与贡献](../README_zh.md#参与贡献)。新条目请加到 `README.md` 与 `README_zh.md`，不要加在本文件。
 
 *English version: [related-resources.md](./related-resources.md)*

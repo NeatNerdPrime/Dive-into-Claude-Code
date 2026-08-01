@@ -9,6 +9,7 @@
   <a href="https://arxiv.org/abs/2604.14228"><img src="https://img.shields.io/badge/arXiv-2604.14228-b31b1b.svg" alt="arXiv"></a>
   <a href="./LICENSE"><img src="https://img.shields.io/badge/License-CC--BY--NC--SA--4.0-lightgrey.svg" alt="许可证"></a>
   <a href="https://github.com/VILA-Lab/Dive-into-Claude-Code/stargazers"><img src="https://img.shields.io/github/stars/VILA-Lab/Dive-into-Claude-Code?style=social" alt="星标数"></a>
+  <a href="#参与贡献"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="欢迎 PR"></a>
 </p>
 
 <p align="center">
@@ -45,6 +46,7 @@
 - [🔎 按设计问题检索资源](#按设计问题检索资源)
 - [🌐 社区项目与研究](#社区项目与研究)
 - [🚀 其他值得关注的 AI 智能体项目](#其他值得关注的-ai-智能体项目)
+- [🤝 参与贡献](#参与贡献)
 - [🔖 引用](#引用)
 
 ---
@@ -53,8 +55,8 @@
 
 - **98.4% 基础设施，1.6% AI** —— 智能体循环不过是一个 while 循环；真正的工程复杂度集中在权限门控、上下文管理和恢复逻辑上。
 - **5 个价值观 → 13 条原则 → 实现** —— 每一条设计决策都能追溯回人类决策权威、安全、可靠性、能力和适应性。
-- **深度防御却存在共享故障模式** —— 7 层安全防护，但都共享性能约束；子命令超过 50 个的命令会绕过安全分析。
-- **4 个 CVE 暴露了预信任窗口** —— 扩展会在信任对话框出现**之前**就已执行。
+- **深度防御却存在共享故障模式** —— 7 层安全防护，但都共享性能约束；子命令一多（超过 50 个），整段安全分析就会被跳过。
+- **2 个 CVE 暴露了预信任窗口** —— 扩展会在信任对话框出现**之前**就已执行。
 - **横跨各层的 harness 难以被重新实现** —— 循环本身容易复制，但钩子、分类器、压缩和隔离机制则不然。
 
 ---
@@ -79,12 +81,12 @@ Claude Code 回答了每个生产级编码智能体都必须面对的**四个设
 
 | 问题 | Claude Code 的答案 |
 |:---------|:---------------------|
-| 推理放在哪里？ | 模型负责推理，harness 负责强制执行。约 1.6% 是 AI，98.4% 是基础设施。 |
+| 推理放在哪里？ | 模型负责推理，harness 负责强制执行规则。约 1.6% 是 AI，98.4% 是基础设施。 |
 | 有多少个执行引擎？ | 一个 `queryLoop` 供所有入口（CLI、SDK、IDE）共用。 |
 | 默认的安全姿态是什么？ | 拒绝优先：拒绝 > 询问 > 允许；最严格的规则优先。 |
 | 最根本的资源约束是什么？ | 约 200K（旧模型）/ 1M（Claude 4.6 系列）的上下文窗口。每次模型调用前都要过 5 层压缩。 |
 
-系统分解为**7 个组件**（用户 → 入口 → 智能体循环 → 权限系统 → 工具 → 状态与持久化 → 执行环境），跨越**5 个架构层**。
+整个系统可以拆成**7 个组件**（用户 → 入口 → 智能体循环 → 权限系统 → 工具 → 状态与持久化 → 执行环境），分布在**5 个架构层**上。
 
 <p align="center">
   <img src="./assets/layered_architecture.png" width="100%" alt="5 层子系统分解">
@@ -102,14 +104,14 @@ Claude Code 回答了每个生产级编码智能体都必须面对的**四个设
 <details>
 <summary><h2>价值观与设计原则</h2></summary>
 
-架构从**5 个人类价值观**追溯到**13 条设计原则**再到实现：
+整套架构可以从**5 个人类价值观**推导到**13 条设计原则**，再落到具体实现：
 
 | 价值观 | 核心思想 |
 |:------|:----------|
 | **人类决策权威** | 人类通过主体层级保持控制。当 93% 的提示批准率暴露出批准疲劳后，Anthropic 的应对是重新划分边界，而不是追加更多警告。 |
 | **安全、安保、隐私** | 即使在人类警惕性下降时，系统也能守住安全底线。7 个独立安全层。 |
 | **可靠执行** | 按用户的本意去执行；收集—行动—验证的闭环；优雅恢复。 |
-| **能力放大** | "一个 Unix 工具，而不是产品。"98.4% 是让模型能够工作的确定性基础设施。 |
+| **能力放大** | "一个 Unix 工具，而不是产品。"98.4% 是让模型跑得起来的确定性基础设施。 |
 | **上下文适应性** | CLAUDE.md 层级、渐进式的可扩展性，以及随时间演变的信任轨迹。 |
 
 <details>
@@ -117,13 +119,13 @@ Claude Code 回答了每个生产级编码智能体都必须面对的**四个设
 
 | 原则 | 设计问题 |
 |:----------|:----------------|
-| 拒绝优先并交由人工升级 | 遇到未知操作，是允许、阻止还是交由人工升级？ |
+| 拒绝优先，转交人工 | 遇到没见过的操作，是放行、拦截，还是交给人来判断？ |
 | 渐进式信任光谱 | 用固定权限等级，还是让用户随使用深入逐步跨越的信任光谱？ |
 | 深度防御 | 一道安全边界，还是多道相互重叠的安全边界？ |
 | 外部化的可编程策略 | 硬编码策略，还是带生命周期钩子的外部化配置？ |
 | 上下文是稀缺资源 | 一次性截断，还是渐进式流水线？ |
 | 仅追加的持久状态 | 可变状态、快照，还是仅追加的日志？ |
-| 最小脚手架，最大 harness | 把投入放在脚手架上，还是放在运行基础设施上？ |
+| 最小脚手架，最大 harness | 把投入放在脚手架上，还是放在 harness 上？ |
 | 价值观优先于规则 | 刚性流程，还是带确定性护栏的语境化判断？ |
 | 可组合的多机制扩展 | 单一 API，还是开销各异的分层机制？ |
 | 按可逆性加权的风险评估 | 对所有操作一视同仁，还是对可逆操作放宽监管？ |
@@ -148,7 +150,7 @@ Claude Code 回答了每个生产级编码智能体都必须面对的**四个设
   <img src="./assets/iteration.png" width="60%" alt="运行时轮次流程">
 </p>
 
-核心是一个 **ReAct 模式的 while 循环**：组装上下文 → 调用模型 → 分派工具 → 检查权限 → 执行 → 重复。实现为一个产生流式事件的 `AsyncGenerator`。
+核心是一个 **ReAct 模式的 while 循环**：组装上下文 → 调用模型 → 分派工具 → 检查权限 → 执行 → 重复。整个循环实现为一个 `AsyncGenerator`，以流式事件的形式逐步输出。
 
 **每次模型调用前**，五个压缩整形阶段按顺序执行（开销最低者优先）：预算削减 → 裁剪 → 微压缩 → 上下文折叠 → 自动压缩。
 
@@ -158,7 +160,7 @@ Claude Code 回答了每个生产级编码智能体都必须面对的**四个设
 - `StreamingToolExecutor` —— 工具流入时即开始执行（延迟优化）
 - 后备 `runTools` —— 将工具分类为并发安全或互斥
 
-**故障恢复：** 最大输出 token 升级（3 次重试）、反应式压缩（每轮一次）、提示过长处理、流式后备、后备模型
+**故障恢复：** 输出 token 上限逐级放宽（最多 3 次重试）、按需触发压缩（每轮一次）、提示过长时降级处理、流式失败后回退、主模型不可用时切换备用模型
 
 **5 个停止条件：** 无工具调用、最大轮次、上下文溢出、钩子干预、显式中止
 
@@ -180,14 +182,14 @@ Claude Code 回答了每个生产级编码智能体都必须面对的**四个设
 **拒绝优先**：宽范围的拒绝规则*始终*压过窄范围的允许规则。**7 个独立安全层**，从工具预过滤，到 shell 沙箱，再到钩子拦截。**恢复会话时权限永不自动恢复**——每次会话都要重新建立信任。
 
 > [!WARNING]
-> **共享故障模式：** 当各层共享同一种约束时，深度防御就会退化。逐个子命令解析会让事件循环陷入饥饿——一旦子命令超过 50 个，Claude Code 就会为了避免 REPL 卡死而跳过整段安全分析。
+> **共享故障模式：** 当各层共享同一种约束时，深度防御就会退化。逐个解析子命令会长时间占住事件循环——一旦子命令超过 50 个，Claude Code 就会为了避免 REPL 卡死而跳过整段安全分析。
 
 <details>
 <summary><b>更多详情：授权管道、auto 模式分类器、CVE</b></summary>
 
 **授权管道：** 预过滤（剥离被拒绝的工具）→ PreToolUse 钩子 → 拒绝优先规则评估 → 权限处理程序（4 个分支：协调器、swarm worker、推测式分类器、交互式）
 
-**Auto 模式分类器**（`yoloClassifier.ts`）：使用内部/外部权限模板的单独 LLM 调用。两阶段：快速过滤 + 思维链。
+**Auto 模式分类器**（`yoloClassifier.ts`）：单独发起一次 LLM 调用，使用内部/外部两套权限模板；分两个阶段，先快速过滤，再走思维链。
 
 **预信任窗口：** 两个已修复的 CVE 根因相同——钩子和 MCP 服务器会在初始化阶段、信任对话框弹出*之前*就已执行，由此形成一个绕开拒绝优先管道、天然享有特权的攻击窗口。
 
@@ -206,11 +208,11 @@ Claude Code 回答了每个生产级编码智能体都必须面对的**四个设
   <img src="./assets/extensibility.png" width="85%" alt="三个注入点：组装、模型、执行">
 </p>
 
-**四个渐进式上下文成本机制：** 钩子（零成本）→ Skills（低成本）→ 插件（中成本）→ MCP（高成本）。智能体循环中的三个注入点：**assemble()**（模型看到的内容）、**model()**（它能触及的内容）、**execute()**（操作是否/如何运行）。
+**四种扩展机制，上下文开销由低到高：** 钩子（零成本）→ Skills（低成本）→ 插件（中成本）→ MCP（高成本）。智能体循环中的三个注入点：**assemble()**（模型看到的内容）、**model()**（它能触及的内容）、**execute()**（操作是否/如何运行）。
 
 **工具池组装**（5 步）：基础枚举（最多 54 个工具）→ 模式过滤 → 拒绝预过滤 → MCP 集成 → 去重
 
-**27 个钩子事件**，跨越 5 个类别，4 种执行类型（shell、LLM 评估、webhook、subagent 验证器）
+**27 个钩子事件**，分为 5 类，共 4 种执行方式（shell、LLM 评估、webhook、subagent 验证器）
 
 **插件清单**支持 10 种组件类型：命令、智能体、skills、钩子、MCP 服务器、LSP 服务器、输出样式、通道、设置、用户配置
 
@@ -229,11 +231,11 @@ Claude Code 回答了每个生产级编码智能体都必须面对的**四个设
   <img src="./assets/context.png" width="95%" alt="上下文构建">
 </p>
 
-由 **9 个有序来源**拼装出上下文窗口。CLAUDE.md 指令作为**用户上下文**传递（模型对其遵从是概率性的），而非系统提示（遵从是确定性的）。记忆是**基于文件的**（不使用向量数据库）——完全可查看、可编辑、可纳入版本控制。
+上下文窗口由 **9 个来源**按固定顺序拼装而成。CLAUDE.md 指令是作为**用户上下文**传进去的（模型不一定照做），而不是写进系统提示（那样才一定生效）。记忆是**基于文件的**（不使用向量数据库）——完全可查看、可编辑、可纳入版本控制。
 
 **4 级 CLAUDE.md 层级：** 托管（`/etc/`）→ 用户（`~/.claude/`）→ 项目（`CLAUDE.md`、`.claude/rules/`）→ 本地（`CLAUDE.local.md`，被 gitignore 忽略）
 
-**5 层压缩**（渐进式惰性降级）：预算削减 → 裁剪 → 微压缩 → 上下文折叠（读取时投影，非破坏性）→ 自动压缩（完整模型摘要，最后手段）
+**5 层压缩**（渐进式惰性降级）：预算削减 → 裁剪 → 微压缩 → 上下文折叠（读取时投影，非破坏性）→ 自动压缩（调模型把全部历史重写成摘要，最后手段）
 
 **记忆检索：** 由 LLM 扫描各记忆文件的文件头，最多挑出 5 个相关文件。不使用嵌入向量，也不使用向量相似度。
 
@@ -250,7 +252,7 @@ Claude Code 回答了每个生产级编码智能体都必须面对的**四个设
   <img src="./assets/subagent.png" width="90%" alt="子智能体架构">
 </p>
 
-**6 个内置类型**（Explore、Plan、General-purpose、Guide、Verification、Statusline）+ 通过 `.claude/agents/*.md` 定义的自定义智能体。**侧链转录稿**：只把摘要回传给父级（父级上下文*被屏蔽*在子智能体的冗长输出之外）。三种隔离模式：worktree、remote、in-process。多实例间通过 POSIX `flock()` 协调。
+**6 个内置类型**（Explore、Plan、General-purpose、Guide、Verification、Statusline）+ 通过 `.claude/agents/*.md` 定义的自定义智能体。**侧链转录稿**：只把摘要回传给父级（子智能体那些冗长的中间输出不会进入父级上下文）。三种隔离模式：worktree、remote、in-process。多实例间通过 POSIX `flock()` 协调。
 
 **SkillTool vs AgentTool：** SkillTool 把内容注入到当前上下文（开销低）。AgentTool 另开一个隔离的上下文（开销高，但能防止上下文爆炸）。
 
@@ -286,7 +288,7 @@ Claude Code 回答了每个生产级编码智能体都必须面对的**四个设
 <details>
 <summary><h2>Agent 设计空间的新信号</h2></summary>
 
-这些 agent 系统的新进展进一步强化了 Claude Code 揭示的同一个判断：agent 能力不只是模型属性，而是由模型周围的运行时、context 层、执行边界、工具供应链、人类对它的控制和评估闭环共同产生。
+这些 agent 系统的新进展进一步强化了 Claude Code 揭示的同一个判断：agent 能力不只是模型属性，而是由模型周围的运行时、context 层、执行边界、工具供应链，以及人类手中的控制手段和外围的评估闭环共同决定的。
 
 | 设计启示 | 对 Agent 构建者意味着什么 | 代表信号 |
 |:---|:---|:---|
@@ -294,10 +296,10 @@ Claude Code 回答了每个生产级编码智能体都必须面对的**四个设
 | **Context 是有生命周期的基础设施** | Prompt、文件、skills、IDE 索引、workspace state、memory namespace 和 interpreter state 都需要生命周期、来源、审查和回滚。 | [LangChain Context Hub](https://www.langchain.com/blog/introducing-context-hub)、[AWS AgentCore](https://aws.amazon.com/blogs/machine-learning/break-the-context-window-barrier-with-amazon-bedrock-agentcore/)、[Anthropic managed-agent memory](https://platform.claude.com/docs/en/managed-agents/memory) |
 | **执行边界就是安全边界** | 权限、网络可达性、文件系统访问、凭证托管、租户隔离和 OS sandboxing 是核心架构，而不是后期加固项。 | [Codex Windows sandbox](https://openai.com/index/building-codex-windows-sandbox/)、[Running Codex safely](https://openai.com/index/running-codex-safely/)、[Anthropic self-hosted sandboxes](https://platform.claude.com/docs/en/managed-agents/self-hosted-sandboxes) |
 | **工具与 skills 构成供应链** | MCP servers、skills、plugins 和 agent-to-agent protocols 需要 registry、allowlist、identity、语义审查、版本管理和撤销机制。 | [NSA MCP security](https://www.nsa.gov/Portals/75/documents/Cybersecurity/CSI_MCP_SECURITY.pdf)、[GitHub MCP allowlists](https://github.blog/changelog/2026-04-16-copilot-cli-supports-custom-registry-based-mcp-allowlists/)、[A2A milestone](https://www.linuxfoundation.org/press/a2a-protocol-surpasses-150-organizations-lands-in-major-cloud-platforms-and-sees-enterprise-production-use-in-first-year) |
-| **人类角色转向管理者与验证者** | Agent 产品应该支持目标、计划、审批、中断、可审查 diff、升级路径，以及受约束的多 agent 写权限。 | [Codex from anywhere](https://openai.com/index/work-with-codex-from-anywhere/)、[Copilot cloud agent](https://github.blog/changelog/2026-04-01-research-plan-and-code-with-copilot-cloud-agent)、[Cognition multi-agents](https://cognition.ai/blog/multi-agents-working) |
+| **人类角色转向管理者与验证者** | Agent 产品应该支持目标、计划、审批、中断、可审查 diff、上报人工的路径，以及受约束的多 agent 写权限。 | [Codex from anywhere](https://openai.com/index/work-with-codex-from-anywhere/)、[Copilot cloud agent](https://github.blog/changelog/2026-04-01-research-plan-and-code-with-copilot-cloud-agent)、[Cognition multi-agents](https://cognition.ai/blog/multi-agents-working) |
 | **可观测性必须进入改进闭环** | Traces 不应止步于被动日志，而应进入 eval、failure clustering、policy enforcement 和 prompt/tool repair。 | [LangSmith Engine](https://www.langchain.com/blog/how-we-built-langsmith-engine-our-agent-for-improving-agents)、[OpenAI agent improvement loop](https://developers.openai.com/cookbook/examples/agents_sdk/agent_improvement_loop)、[AWS AgentCore Evaluations](https://aws.amazon.com/blogs/machine-learning/build-reliable-ai-agents-with-amazon-bedrock-agentcore-evaluations/) |
 
-这些信号不是在替代 Claude Code 的 design space，而是在让它的边界更清晰：agent loop 是小的部分，周围的 harness 才是大多数能力、安全和可靠性决策发生的地方。按月份记录的资料见 **[docs/agent-design-space-source-notes_zh.md](./docs/agent-design-space-source-notes_zh.md)**。
+这些信号不是在替代 Claude Code 的 design space，而是在让它的边界更清晰：agent loop 只是很小的一块，真正决定能力、安全和可靠性的，是它外面那层 harness。按月份记录的资料见 **[docs/agent-design-space-source-notes_zh.md](./docs/agent-design-space-source-notes_zh.md)**。
 
 <p align="right"><a href="#深入理解-claude-code">↑ 返回顶部</a></p>
 
@@ -332,7 +334,7 @@ Claude Code 回答了每个生产级编码智能体都必须面对的**四个设
 <details>
 <summary><h2>跨系统对比：Claude Code vs OpenClaw vs Hermes-Agent</h2></summary>
 
-同样的设计问题，在不同的部署情境下会给出不同的架构答案。下表以论文第 10 节用于 OpenClaw 对比的六个设计维度，对 Claude Code v2.1.88 与两个具有代表性的同类系统进行对比——[OpenClaw](https://github.com/openclaw/openclaw)（本地优先的多渠道个人助手网关）和 [NousResearch/hermes-agent](https://github.com/NousResearch/hermes-agent)（支持多部署场景的自改进智能体）。各单元格均有来源依据，这不是功能评分表。
+同样的设计问题，换一种部署场景就会得到不同的架构答案。下表沿用论文第 10 节做 OpenClaw 对比时的六个维度，把 Claude Code v2.1.88 和两个有代表性的同类系统放在一起看：[OpenClaw](https://github.com/openclaw/openclaw)（本地优先的多渠道个人助手网关）与 [NousResearch/hermes-agent](https://github.com/NousResearch/hermes-agent)（支持多种部署场景的自改进智能体）。每一格的内容都有出处，这不是功能打分表。
 
 | 设计维度 | Claude Code (v2.1.88) [![Star](https://img.shields.io/github/stars/anthropics/claude-code.svg?style=social&label=Star)](https://github.com/anthropics/claude-code) | OpenClaw [![Star](https://img.shields.io/github/stars/openclaw/openclaw.svg?style=social&label=Star)](https://github.com/openclaw/openclaw) | Hermes-Agent [![Star](https://img.shields.io/github/stars/NousResearch/hermes-agent.svg?style=social&label=Star)](https://github.com/NousResearch/hermes-agent) |
 |:---|:---|:---|:---|
@@ -343,7 +345,7 @@ Claude Code 回答了每个生产级编码智能体都必须面对的**四个设
 | **记忆与上下文** | 四层 CLAUDE.md 层级；API 调用前压缩（Snip、Microcompact、Context Collapse、Auto-Compact）；基于 LLM 从文件型 Markdown 记忆文件中进行选择。 | 工作区启动文件（AGENTS.md、SOUL.md、TOOLS.md、IDENTITY.md、USER.md）及条件性 BOOTSTRAP.md / HEARTBEAT.md / MEMORY.md；独立记忆系统（MEMORY.md、`memory/YYYY-MM-DD.md` 格式的每日笔记、可选 DREAMS.md）；配置 embedding provider 后启用向量+关键词混合检索；实验性 dreaming 在后台整合并将符合条件的条目提升至长期记忆；可插拔压缩 provider。 | SQLite 状态存储，含 FTS5 全文检索和 WAL 模式并发读取；sessions 通过 `parent_session_id` 链接以支持压缩触发的会话拆分；`plugins/memory/` 下提供 8 个可换记忆后端（byterover、hindsight、holographic、honcho、mem0、openviking、retaindb、supermemory）；辅助 LLM 压缩作为独立的上下文管理层。 |
 | **多智能体架构** | 通过侧链转录委托子智能体；6 种内置智能体定义（可用性取决于构建/模式）加自定义；父节点仅接收单条摘要消息（in-process / viewable transcript 情况下可保留更多内部细节）；隔离设置包含 `worktree` 和 `remote`，swarm 路径中有 `in-process` 队友后端。 | 两层架构。(1) 多智能体路由：每渠道独立智能体，拥有各自的工作区、认证配置、会话存储和模型配置，通过确定性绑定规则分发。(2) 子智能体委托：`maxSpawnDepth` 范围 1–5，默认 1，建议 2；工具策略按深度变化；项目愿景（VISION.md）明确拒绝将智能体层级框架作为默认架构。 | `delegate_task` 工具在 `ThreadPoolExecutor` 中派生子 AIAgent 实例（父节点阻塞直至子节点完成）；每个子节点有全新对话历史、独立 `task_id`，以及受限工具集（`DELEGATE_BLOCKED_TOOLS` 移除了 `delegate_task`、`clarify`、`memory`、`send_message`、`execute_code`）；默认深度 `MAX_DEPTH = 1`（可配置，上限为 3）；默认 3 个并发子节点。 |
 
-**对比揭示了什么。** 从表格中可以得出三点观察。第一，**部署情境**决定了大多数下游设计选择：面向单用户的编程 CLI 收敛于逐动作审批和单一执行循环，多渠道网关收敛于边界信任和渠道绑定的智能体，多部署消息云端智能体则收敛于可选容器/云隔离、LLM 智能审批和可换后端记忆层。第二，**扩展层是各系统最鲜明的差异化所在**：Claude Code 按上下文开销将四种机制分层，OpenClaw 将扩展视为网关层的注册表管理能力，Hermes-Agent 则内置插件组并对外暴露双 MCP 服务器 / ACP 服务器接口供其他智能体接入。第三，**记忆架构跨越一个连续谱**：文件型、可检视的 Markdown（Claude Code），文件型加可选向量及实验性 dreaming（OpenClaw），或 FTS5 全文索引加八个可换插件后端（含专用向量 / RAG provider）（Hermes-Agent）。此表最适合作为设计空间中三个不同定点来阅读，而非功能排行榜。
+**对比揭示了什么。** 有三点值得注意。第一，**部署场景**决定了后面大多数设计选择：面向单用户的编程 CLI 收敛于逐动作审批和单一执行循环，多渠道网关收敛于边界信任和渠道绑定的智能体，多部署消息云端智能体则收敛于可选容器/云隔离、LLM 智能审批和可换后端记忆层。第二，**扩展层是各系统最鲜明的差异化所在**：Claude Code 按上下文开销将四种机制分层，OpenClaw 将扩展视为网关层的注册表管理能力，Hermes-Agent 则内置插件组并对外暴露双 MCP 服务器 / ACP 服务器接口供其他智能体接入。第三，**记忆架构分布在一条光谱上**：一端是文件型、可直接查看的 Markdown（Claude Code），中间是文件型再加上可选的向量检索和实验性 dreaming（OpenClaw），另一端是 FTS5 全文索引加八个可换的插件后端，其中包含专用的向量 / RAG provider（Hermes-Agent）。这张表更适合读成设计空间里的三个不同落点，而不是一份功能排行榜。
 
 <p align="right"><a href="#深入理解-claude-code">↑ 返回顶部</a></p>
 
@@ -353,7 +355,7 @@ Claude Code 回答了每个生产级编码智能体都必须面对的**四个设
 
 ## 按设计问题检索资源
 
-上面各节给出的是 Claude Code 自己对每个设计问题的回答，下面的目录则是按资源类型组织的。这张表把两者接起来，让你可以从问题出发，而不是从文件类型出发。
+上面各节给出的是 Claude Code 自己对每个设计问题的回答，下面的目录则是按资源类型组织的。这张表把两者接起来，让你可以从问题出发，而不是从资源类型出发。
 
 | 设计问题 | Claude Code 的回答 | 外部资源在哪里 |
 |:---|:---|:---|
@@ -363,7 +365,7 @@ Claude Code 回答了每个生产级编码智能体都必须面对的**四个设
 | **模型到底看到了什么？** 上下文构造、记忆、压缩。 | [上下文与记忆](#上下文与记忆) | [记忆与持久化上下文](#记忆与持久化上下文) · [博客文章与技术文章](#博客文章与技术文章) · [学术论文](#相关学术论文) |
 | **工作怎么分配下去？** 子智能体、团队、编排。 | [子智能体委托](#子智能体委托) | [智能体框架与编排](#智能体框架与编排) · [跨厂商工程](#跨厂商代码智能体工程) · [跨系统对比](#跨系统对比claude-code-vs-openclaw-vs-hermes-agent) |
 | **重启之后什么还在？** 会话、检查点、持久化。 | [会话持久化](#会话持久化) | [运行时与沙箱基础设施](#运行时与沙箱基础设施) · [跨厂商工程](#跨厂商代码智能体工程) |
-| **怎么知道它真的做对了？** 评测、基准、轨迹分析。 | [新信号：让改进闭环](#agent-设计空间的新信号) | [评测与基准](#评测与基准) · [学术论文](#相关学术论文) |
+| **怎么知道它真的做对了？** 评测、基准、轨迹分析。 | [新信号：让改进形成闭环](#agent-设计空间的新信号) | [评测与基准](#评测与基准) · [学术论文](#相关学术论文) |
 
 若某个变化横跨所有维度、而不是落在单条轴上，见 [Agent 设计空间的新信号](#agent-设计空间的新信号)。
 
@@ -561,6 +563,7 @@ Claude Code 回答了每个生产级编码智能体都必须面对的**四个设
 
 | 资源 | 来源 | 它说明了什么 |
 |:---------|:-------|:--------------|
+| [ClawBench: Can AI Agents Complete Everyday Online Tasks?](https://arxiv.org/abs/2604.08523)（[代码](https://github.com/reacher-z/ClawBench) · [项目主页](https://claw-bench.com/) · [数据集](https://huggingface.co/datasets/NAIL-Group/ClawBench)） | arXiv | 在真实站点上跑的浏览器智能体基准，V1+V2 共 283 个任务，覆盖 163 个网站。每次运行都在隔离的浏览器容器里执行，判定上把请求拦截与 LLM 裁判结合起来，同时保留回放、截图、HTTP 流量、浏览器动作和智能体消息，便于事后核查。它对 harness 这个问题的意义在于，把"真实网站"这个评测里最不可控的变量，做成了一次运行可以被复现的环境。 |
 | [Harness-Bench: Measuring Harness Effects across Models in Realistic Agent Workflows](https://arxiv.org/abs/2605.27922) | arXiv | 106 个沙箱任务、5,194 条执行轨迹，在任务环境、预算与评测协议全部固定的前提下，只让 harness 配置在不同模型后端之间变化。文中给一类反复出现的现象起名为 execution-alignment failure：看起来合理的推理与工具反馈、工作区状态脱节。结论是智能体能力「应当在 model-harness 配置这一层级上报告，而不是归因于基座模型本身」。 |
 | [Position: Coding Benchmarks Are Misaligned with Agentic Software Engineering](https://arxiv.org/abs/2606.17799) | arXiv | 主张「实践中的代码智能体不是一个模型，而是一套系统 harness」，因此端到端分数把模型、harness、上下文、环境与反馈信号混在了一起，其中任何一项都能让分数移动「与相邻两代模型之间的差距相当的幅度」。文中还指出以单一参考答案打分会惩罚同样成立的其他解法。 |
 | [Harbor-Index 1.0](https://harbor-index.org/) | Harbor | 一个紧凑的跨领域智能体基准：82 道题，从 6,627 个候选中经难度筛选、自动审计与人工复核蒸馏而来，覆盖软件工程、科学研究、工具与系统、知识、数学、数据分析与安全。评分为严格二元、没有部分分，且刻意为「留出上限」而设计，而非用来预测别处的表现。 |
@@ -705,6 +708,12 @@ Claude Code 回答了每个生产级编码智能体都必须面对的**四个设
 
 [![Star History Chart](https://api.star-history.com/svg?repos=VILA-Lab/Dive-into-Claude-Code&type=Date)](https://www.star-history.com/#VILA-Lab/Dive-into-Claude-Code&Date)
 
+## 参与贡献
+
+欢迎补充资源。这个方向更新很快，难免有遗漏。
+
+如果发现值得收录的论文、博客、仓库、评测或安全分析，欢迎直接提 pull request 或 issue。
+
 ## 引用
 
 <!-- <details>
@@ -712,12 +721,13 @@ Claude Code 回答了每个生产级编码智能体都必须面对的**四个设
 
 ```bibtex
 @article{diveclaudecode2026,
-  title={Dive into Claude Code: The Design Space of Today's and Future AI Agent Systems},
-  author={Jiacheng Liu, Xiaohan Zhao, Xinyi Shang, and Zhiqiang Shen},
+  title={{Dive into Claude Code: The Design Space of Today's and Future AI Agent Systems}},
+  author={Liu, Jiacheng and Zhao, Xiaohan and Shang, Xinyi and Shen, Zhiqiang},
+  journal={arXiv preprint arXiv:2604.14228},
   year={2026},
   eprint={2604.14228},
   archivePrefix={arXiv},
-  primaryClass={cs.SE},
+  primaryClass={cs.SE}
 }
 ```
 

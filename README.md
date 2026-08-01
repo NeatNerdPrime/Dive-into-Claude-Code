@@ -9,6 +9,7 @@
   <a href="https://arxiv.org/abs/2604.14228"><img src="https://img.shields.io/badge/arXiv-2604.14228-b31b1b.svg" alt="arXiv"></a>
   <a href="./LICENSE"><img src="https://img.shields.io/badge/License-CC--BY--NC--SA--4.0-lightgrey.svg" alt="License"></a>
   <a href="https://github.com/VILA-Lab/Dive-into-Claude-Code/stargazers"><img src="https://img.shields.io/github/stars/VILA-Lab/Dive-into-Claude-Code?style=social" alt="Stars"></a>
+  <a href="#contributing"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs Welcome"></a>
 </p>
 
 <p align="center">
@@ -45,6 +46,7 @@
 - [🔎 Find Resources by Design Question](#find-resources-by-design-question)
 - [🌐 Community Projects & Research](#community-projects--research)
 - [🚀 Other Notable AI Agent Projects](#other-notable-ai-agent-projects)
+- [🤝 Contributing](#contributing)
 - [🔖 Citation](#citation)
 
 ---
@@ -54,7 +56,7 @@
 - **98.4% Infrastructure, 1.6% AI** -- The agent loop is a simple while-loop; the real complexity is permission gates, context management, and recovery logic.
 - **5 Values → 13 Principles → Implementation** -- Every design choice traces back to human authority, safety, reliability, capability, and adaptability.
 - **Defense in Depth with Shared Failure Modes** -- 7 safety layers, but all share performance constraints. 50+ subcommands bypass security analysis.
-- **4 CVEs Reveal a Pre-Trust Window** -- Extensions execute *before* the trust dialog appears.
+- **2 CVEs Reveal a Pre-Trust Window** -- Extensions execute *before* the trust dialog appears.
 - **The Cross-Cutting Harness Resists Reimplementation** -- The loop is easy to copy; hooks, classifier, compaction, and isolation are not.
 
 ---
@@ -93,7 +95,7 @@ The system decomposes into **7 components** (User → Interfaces → Agent Loop 
 > [!NOTE]
 > For the full architectural deep dive -- 7 safety layers, 9-step turn pipeline, 5-layer compaction, and more -- see **[docs/architecture.md](./docs/architecture.md)**.
 
-<p align="right"><a href="#dive-into-claude-code-the-design-space-of-todays-ai-agent-system">↑ Back to top</a></p>
+<p align="right"><a href="#dive-into-claude-code">↑ Back to top</a></p>
 
 </details>
 
@@ -135,7 +137,7 @@ The architecture traces from **5 human values** through **13 design principles**
 
 The paper also applies a **sixth evaluative lens** -- long-term capability preservation -- citing evidence that developers in AI-assisted conditions score 17% lower on comprehension tests.
 
-<p align="right"><a href="#dive-into-claude-code-the-design-space-of-todays-ai-agent-system">↑ Back to top</a></p>
+<p align="right"><a href="#dive-into-claude-code">↑ Back to top</a></p>
 
 </details>
 
@@ -162,7 +164,7 @@ The core is a **ReAct-pattern while-loop**: assemble context → call model → 
 
 **5 stop conditions:** No tool use, max turns, context overflow, hook intervention, explicit abort
 
-<p align="right"><a href="#dive-into-claude-code-the-design-space-of-todays-ai-agent-system">↑ Back to top</a></p>
+<p align="right"><a href="#dive-into-claude-code">↑ Back to top</a></p>
 
 </details>
 
@@ -193,7 +195,7 @@ The core is a **ReAct-pattern while-loop**: assemble context → call model → 
 
 </details>
 
-<p align="right"><a href="#dive-into-claude-code-the-design-space-of-todays-ai-agent-system">↑ Back to top</a></p>
+<p align="right"><a href="#dive-into-claude-code">↑ Back to top</a></p>
 
 </details>
 
@@ -216,7 +218,7 @@ The core is a **ReAct-pattern while-loop**: assemble context → call model → 
 
 **Skills:** SKILL.md with 15+ YAML frontmatter fields. Key difference -- SkillTool injects into current context; AgentTool spawns isolated context.
 
-<p align="right"><a href="#dive-into-claude-code-the-design-space-of-todays-ai-agent-system">↑ Back to top</a></p>
+<p align="right"><a href="#dive-into-claude-code">↑ Back to top</a></p>
 
 </details>
 
@@ -237,7 +239,7 @@ The core is a **ReAct-pattern while-loop**: assemble context → call model → 
 
 **Memory retrieval:** LLM-based scan of memory-file headers, selects up to 5 relevant files. No embeddings, no vector similarity.
 
-<p align="right"><a href="#dive-into-claude-code-the-design-space-of-todays-ai-agent-system">↑ Back to top</a></p>
+<p align="right"><a href="#dive-into-claude-code">↑ Back to top</a></p>
 
 </details>
 
@@ -258,7 +260,7 @@ The core is a **ReAct-pattern while-loop**: assemble context → call model → 
 
 **Custom agents:** YAML frontmatter supports tools, disallowedTools, model, effort, permissionMode, mcpServers, hooks, maxTurns, skills, memory scope, background flag, isolation mode.
 
-<p align="right"><a href="#dive-into-claude-code-the-design-space-of-todays-ai-agent-system">↑ Back to top</a></p>
+<p align="right"><a href="#dive-into-claude-code">↑ Back to top</a></p>
 
 </details>
 
@@ -277,7 +279,7 @@ Three channels: append-only JSONL transcripts, global prompt history, subagent s
 
 **Checkpoints:** File-history checkpoints for `--rewind-files`, stored at `~/.claude/file-history/<sessionId>/`.
 
-<p align="right"><a href="#dive-into-claude-code-the-design-space-of-todays-ai-agent-system">↑ Back to top</a></p>
+<p align="right"><a href="#dive-into-claude-code">↑ Back to top</a></p>
 
 </details>
 
@@ -297,9 +299,9 @@ New agent-system developments reinforce the same lesson Claude Code makes clear:
 | **Humans become managers and verifiers** | Agent products should support goals, plans, approvals, interrupts, reviewable diffs, escalation, and constrained multi-agent write authority. | [Codex from anywhere](https://openai.com/index/work-with-codex-from-anywhere/), [Copilot cloud agent](https://github.blog/changelog/2026-04-01-research-plan-and-code-with-copilot-cloud-agent), [Cognition multi-agents](https://cognition.ai/blog/multi-agents-working) |
 | **Observability must close the improvement loop** | Traces should feed evaluation, failure clustering, policy enforcement, and prompt/tool repair rather than ending as passive logs. | [LangSmith Engine](https://www.langchain.com/blog/how-we-built-langsmith-engine-our-agent-for-improving-agents), [OpenAI agent improvement loop](https://developers.openai.com/cookbook/examples/agents_sdk/agent_improvement_loop), [AWS AgentCore Evaluations](https://aws.amazon.com/blogs/machine-learning/build-reliable-ai-agents-with-amazon-bedrock-agentcore-evaluations/) |
 
-These signals do not replace Claude Code's design space; they make its boundaries clearer. The agent loop is the small part. The harness around it is where most capability, safety, and reliability decisions now live. For month-level source notes, see **[docs/agent-design-space-source-notes_zh.md](./docs/agent-design-space-source-notes_zh.md)**.
+These signals do not replace Claude Code's design space; they make its boundaries clearer. The agent loop is the small part. The harness around it is where most capability, safety, and reliability decisions now live. For month-level source notes, see **[docs/agent-design-space-source-notes.md](./docs/agent-design-space-source-notes.md)**.
 
-<p align="right"><a href="#dive-into-claude-code-the-design-space-of-todays-ai-agent-system">↑ Back to top</a></p>
+<p align="right"><a href="#dive-into-claude-code">↑ Back to top</a></p>
 
 </details>
 
@@ -323,7 +325,7 @@ Every production agent must navigate these decisions:
 
 **Read the full guide: [docs/build-your-own-agent.md](./docs/build-your-own-agent.md)**
 
-<p align="right"><a href="#dive-into-claude-code-the-design-space-of-todays-ai-agent-system">↑ Back to top</a></p>
+<p align="right"><a href="#dive-into-claude-code">↑ Back to top</a></p>
 
 </details>
 
@@ -345,7 +347,7 @@ The same recurring design questions admit different architectural answers when t
 
 **What this contrast reveals.** Three observations follow from the table. First, **deployment context** drives the rest of the design: a per-user coding CLI converges on per-action approval and a single execution loop, a multi-channel gateway converges on perimeter trust and channel-bound agents, and a multi-deployment messaging-and-cloud agent converges on opt-in container/cloud isolation, an LLM-based smart approval, and a swappable-backend memory layer. Second, the **extension layer is where each system most clearly differentiates**: Claude Code stratifies four mechanisms by context cost, OpenClaw treats extension as registry-managed capabilities at the gateway, and Hermes-Agent ships bundled plugins plus dual MCP server / ACP server interfaces other agents can connect to. Third, **memory architectures sit on a spectrum**: file-based and inspectable Markdown (Claude Code), file-based plus optional vector + experimental dreaming (OpenClaw), or full-text indexed (FTS5) plus eight swappable plugin backends including dedicated vector / RAG providers (Hermes-Agent). The table is best read not as a scoreboard but as three different fixed points in the same design space.
 
-<p align="right"><a href="#dive-into-claude-code-the-design-space-of-todays-ai-agent-system">↑ Back to top</a></p>
+<p align="right"><a href="#dive-into-claude-code">↑ Back to top</a></p>
 
 </details>
 
@@ -353,7 +355,7 @@ The same recurring design questions admit different architectural answers when t
 
 ## Find Resources by Design Question
 
-The sections above give Claude Code's own answer to each design question. The catalogs below are organized by resource type instead. This table joins the two, so you can start from a question rather than from a file format.
+The sections above give Claude Code's own answer to each design question. The catalogs below are organized by resource type instead. This table joins the two, so you can start from a question rather than from a resource type.
 
 | Design question | Claude Code's answer | Where the outside resources are |
 |:---|:---|:---|
@@ -561,7 +563,7 @@ Benchmarks for coding agents, and the growing body of work auditing whether thos
 
 | Resource | Source | What It Shows |
 |:---------|:-------|:--------------|
-| [ClawBench: Can AI Agents Complete Everyday Online Tasks?](https://arxiv.org/abs/2604.08523) ([code](https://github.com/reacher-z/ClawBench) · [project](https://claw-bench.com/) · [dataset](https://huggingface.co/datasets/NAIL-Group/ClawBench)) | arXiv | A live-site browser-agent benchmark with 283 V1+V2 tasks across 163 websites. Runs execute in isolated browser containers and combine request interception with an LLM judge, while preserving replay, screenshots, HTTP traffic, browser actions, and agent messages for auditability. |
+| [ClawBench: Can AI Agents Complete Everyday Online Tasks?](https://arxiv.org/abs/2604.08523) ([code](https://github.com/reacher-z/ClawBench) · [project](https://claw-bench.com/) · [dataset](https://huggingface.co/datasets/NAIL-Group/ClawBench)) | arXiv | A live-site browser-agent benchmark with 283 V1+V2 tasks across 163 websites. Runs execute in isolated browser containers and combine request interception with an LLM judge, while preserving replay, screenshots, HTTP traffic, browser actions, and agent messages for auditability. Its contribution to the harness question is making live websites — the least controllable variable in agent evaluation — into an environment a run can actually be reproduced against. |
 | [Harness-Bench: Measuring Harness Effects across Models in Realistic Agent Workflows](https://arxiv.org/abs/2605.27922) | arXiv | 106 sandboxed tasks and 5,194 execution trajectories run with task environments, budgets, and evaluation protocols held fixed while the harness configuration varies across model backends. Names a recurring pattern it calls execution-alignment failure, where plausible reasoning becomes decoupled from tool feedback and workspace state, and concludes that agent capability "should be reported at the model-harness configuration level rather than attributed to the base model alone." |
 | [Position: Coding Benchmarks Are Misaligned with Agentic Software Engineering](https://arxiv.org/abs/2606.17799) | arXiv | Argues that "a coding agent in practice is not a model: it is a system harness," so an end-to-end score conflates model, harness, context, environment, and feedback signal, any of which can move the number "by margins comparable to those between adjacent model generations." Also faults grading against a single reference solution, which penalizes equally valid alternatives. |
 | [Harbor-Index 1.0](https://harbor-index.org/) | Harbor | A compact cross-domain agent benchmark: 82 tasks distilled from 6,627 candidates through difficulty screening, automated audit, and human review, spanning software engineering, scientific research, tools and systems, knowledge, mathematics, data analytics, and safety. Scoring is strictly binary with no partial credit, and it is built deliberately for headroom rather than for predicting performance elsewhere. |
@@ -603,7 +605,7 @@ Benchmarks for coding agents, and the growing body of work auditing whether thos
 > While the projects above focus on **engineering reverse-engineering** or **practical reimplementation**, this paper provides a **systematic values → principles → implementation** analytical framework — tracing five human values through thirteen design principles to specific source-level choices, and using OpenClaw comparison to reveal that cross-cutting integrative mechanisms, not modular features, are the true locus of engineering complexity.
 
 
-<p align="right"><a href="#dive-into-claude-code-the-design-space-of-todays-ai-agent-system">↑ Back to top</a></p>
+<p align="right"><a href="#dive-into-claude-code">↑ Back to top</a></p>
 
 </details>
 
@@ -698,12 +700,18 @@ A broader map of the agent design space surrounding Claude Code. The [Cross-Syst
 | [**agentscope-ai/QwenPaw**](https://github.com/agentscope-ai/QwenPaw) [![Star](https://img.shields.io/github/stars/agentscope-ai/QwenPaw.svg?style=social&label=Star)](https://github.com/agentscope-ai/QwenPaw) | Feb 2026 | Personal AI assistant from the AgentScope team. |
 | [**cft0808/edict**](https://github.com/cft0808/edict) [![Star](https://img.shields.io/github/stars/cft0808/edict.svg?style=social&label=Star)](https://github.com/cft0808/edict) | Feb 2026 | OpenClaw-based multi-agent orchestration on Tang-dynasty Three Departments and Six Ministries (三省六部制) bureaucracy. |
 
-<p align="right"><a href="#dive-into-claude-code-the-design-space-of-todays-ai-agent-system">↑ Back to top</a></p>
+<p align="right"><a href="#dive-into-claude-code">↑ Back to top</a></p>
 
 </details>
 
 ---
 [![Star History Chart](https://api.star-history.com/svg?repos=VILA-Lab/Dive-into-Claude-Code&type=Date)](https://www.star-history.com/#VILA-Lab/Dive-into-Claude-Code&Date)
+
+## Contributing
+
+Contributions are welcome — this space moves fast, and things slip past us.
+
+If you come across a paper, blog post, repository, benchmark, or security write-up worth adding, feel free to open a pull request or an issue.
 
 ## Citation
 
@@ -712,12 +720,13 @@ A broader map of the agent design space surrounding Claude Code. The [Cross-Syst
 
 ```bibtex
 @article{diveclaudecode2026,
-  title={Dive into Claude Code: The Design Space of Today's and Future AI Agent Systems},
-  author={Jiacheng Liu, Xiaohan Zhao, Xinyi Shang, and Zhiqiang Shen},
+  title={{Dive into Claude Code: The Design Space of Today's and Future AI Agent Systems}},
+  author={Liu, Jiacheng and Zhao, Xiaohan and Shang, Xinyi and Shen, Zhiqiang},
+  journal={arXiv preprint arXiv:2604.14228},
   year={2026},
   eprint={2604.14228},
   archivePrefix={arXiv},
-  primaryClass={cs.SE},
+  primaryClass={cs.SE}
 }
 ```
 

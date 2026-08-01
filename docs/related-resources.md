@@ -21,6 +21,6 @@ Go to **[Community Projects & Research](../README.md#community-projects--researc
 |:---|:---|
 | [Agent Systems Design Space Source Notes](./agent-design-space-source-notes_zh.md) | Chinese-language notes on high-signal agent-system design sources and new developments, with year-month metadata kept per source for ongoing extension. Focuses on the emerging agent operating layer, sandboxes, context and memory, tool connectivity, human control surfaces, and trace/eval improvement loops. |
 
-> **Maintainers:** add new entries to `README.md` and `README_zh.md`, not to this file.
+> **Adding a resource?** Contributions are welcome — see [Contributing](../README.md#contributing). New entries go in `README.md` and `README_zh.md`, not in this file.
 
 *Chinese version: [related-resources_zh.md](./related-resources_zh.md)*

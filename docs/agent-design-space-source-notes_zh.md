@@ -4,6 +4,8 @@
 
 本页记录与 agent system design space 高度相关、且来源质量足够高的新进展。每条资料保留发布年月，方便后续持续追加和比较。
 
+英文版见 [agent-design-space-source-notes.md](./agent-design-space-source-notes.md)，其中收录了 2026-06-25 至 2026-07-30 窗口的候选资料（按 P0/P1/P2 分桶），并为每条标注了拟归入的 README 小节。
+
 本页汇总关于 agent system 设计空间的高信号资料，重点关注高层原则、运行时机制、权限与治理、上下文/记忆、工具连接、长程执行、多 agent 编排和评测安全。资料来自并行子代理检索后的人工合并与去重。
 
 ## 快速结论
