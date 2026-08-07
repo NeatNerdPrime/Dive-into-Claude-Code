@@ -10,9 +10,15 @@ Everything below is a **candidate**, not a catalog entry. Each row carries the s
 
 > **Maintainers:** this file is a research log. Catalog entries themselves belong in `README.md` and `README_zh.md`.
 
+## Writing conventions
+
+- Keep product names, API identifiers, commands, and paper-defined terms in their original form; translate ordinary technical prose instead of mixing languages for effect.
+- Separate reported results, the source author's interpretation, and our own catalog judgment. Avoid rankings, superlatives, and claims of inevitability unless the source establishes them.
+- A catalog description should identify the mechanism, the evidence, and the main limitation. Similar sources stay only when they answer different design questions. A promoted URL may still appear in this research log as an audit trail; that is not a second catalog entry.
+
 ## Weekly addendum — 2026-07-31 to 2026-08-07
 
-This addendum preserves the completed July sweep below and records the next weekly delta separately. The strongest signal this week is not a single model release: state, recovery, cross-session coordination, and extension trust are becoming explicit harness contracts.
+This addendum preserves the completed July sweep below and records the next weekly delta separately. Across this week's releases and papers, the recurring topics are explicit task state, recovery semantics, cross-session coordination, and trust boundaries for extensions.
 
 ### Promoted to the bilingual catalog
 
@@ -21,14 +27,14 @@ This addendum preserves the completed July sweep below and records the next week
 | 2026-08-07 | [Claude Code v2.1.221–v2.1.224](https://github.com/anthropics/claude-code/releases/tag/v2.1.224) | Promoted as one changelog update: self-hosted runners, cross-machine session messaging, credential masking, permission propagation, and several sandbox/policy escape fixes form one coherent control-plane change. |
 | 2026-08-07 | [Codex 0.147.0](https://github.com/openai/codex/releases/tag/rust-v0.147.0) | Promoted: portable plugin catalogs, MCP 2026-07-28 support, conversation/skill imports, remote compaction, explicit project trust, redaction, and fail-closed plugin networking. |
 | 2026-08-04 | [Warp Agent CLI](https://www.warp.dev/blog/introducing-the-warp-agent-cli-coding-agent) | Promoted: the PTY multiplexer is the runtime primitive, supporting interactive applications, SSH continuity, cross-harness delegation, and local-to-cloud handoff. |
-| 2026-07-29 | [Deep Agents v0.7](https://www.langchain.com/blog/deep-agents-v0-7) | Promoted as a one-month backfill: removing prompt and todo scaffolding cuts base input about 65% without a statistically clear reward loss across the reported model matrix. |
+| 2026-07-29 | [Deep Agents v0.7](https://www.langchain.com/blog/deep-agents-v0-7) | Promoted as a one-month backfill: removing prompt and todo scaffolding cuts base input about 65%; the reported model matrix does not show a statistically clear loss in overall reward. |
 | 2026-07-31 | [LoopsBench](https://arxiv.org/abs/2608.00267) | Promoted: dependency-aware tests, persistent regression obligations, and an outer continuation loop directly evaluate long-horizon loop engineering. |
 | 2026-08-01 | [Ledger](https://arxiv.org/abs/2608.00808) | Promoted: explicit evidence/dependency state improves full SWE-bench Verified results while reducing cost, without another model call. |
 | 2026-08-03 | [Rethinking Self-Evolving Agent Skills](https://arxiv.org/abs/2608.02636) | Promoted: the experiments resolve skill evolution into sparse, validation-filtered search in which failed trajectories matter. |
 | 2026-08-04 | [The Resume Contract](https://arxiv.org/abs/2608.03836) | Promoted: formal and empirical tests show that checkpoint APIs alone do not guarantee exactly-once durable behavior. |
 | 2026-08-05 | [Active-SWE](https://arxiv.org/abs/2608.04682) | Promoted: removing the issue report exposes proactive bug discovery as distinct from issue-conditioned repair. |
-| 2026-08-05 | [SciCode-Verified](https://arxiv.org/abs/2608.04975) | Promoted: 263 benchmark defects and 192 false rejections materially reverse measured accuracy. |
-| 2026-08-05 | [Malicious Skill Files](https://arxiv.org/abs/2608.05223) | Promoted with scope caveats: a large synthetic study makes the skills directory a measurable supply-chain boundary. |
+| 2026-08-05 | [SciCode-Verified](https://arxiv.org/abs/2608.04975) | Promoted: correcting 263 benchmark defects, including 192 false rejections, changes the reported accuracy substantially. |
+| 2026-08-05 | [Malicious Skill Files](https://arxiv.org/abs/2608.05223) | Promoted with scope caveats: the synthetic study measures how two coding-agent CLIs respond to malicious files in their skills directories. |
 | 2026-08-06 | [DCAS](https://arxiv.org/abs/2608.06113) | Promoted with its single-benchmark limitation: trajectory tuning can create severe scaffold lock-in; cross-scaffold data partly restores transfer. |
 | 2026-08-06 | [Learning Globally Reusable Skills](https://arxiv.org/abs/2608.06153) | Promoted: relation-aware consolidation and replay checking move skill evolution toward maintaining a regression-tested skill bank. |
 

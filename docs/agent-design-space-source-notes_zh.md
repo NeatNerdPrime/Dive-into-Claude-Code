@@ -8,27 +8,33 @@
 
 本页汇总关于 agent system 设计空间的高信号资料，重点关注高层原则、运行时机制、权限与治理、上下文/记忆、工具连接、长程执行、多 agent 编排和评测安全。资料来自并行子代理检索后的人工合并与去重。
 
+## 用语约定
+
+- 产品名、API 标识符、命令和论文定义的专有术语保留原文；普通技术概念尽量使用自然中文，不为显得专业而夹杂英文。
+- 分清论文报告的结果、作者自己的解释和本目录的判断。除非来源能够证明，否则不用“首次”“最强”“必然”“彻底解决”之类的说法。
+- 主目录中的说明应交代机制、证据和主要限制。主题相近的资料只有在回答不同设计问题时才同时保留。已经入选的链接仍可留在本页作为筛选记录，但不算主目录重复收录。
+
 ## 每周增量：2026-07-31 至 2026-08-07
 
-本段保留下面已经完成的 7 月资料池，单独记录新一周的变化。本周最强的共同信号并不是某个模型发布，而是状态、恢复、跨会话协调与扩展信任正在变成显式的 harness contract。
+本段保留下面已经完成的 7 月资料池，单独记录新一周的变化。本周反复出现的几个问题是：任务状态放在哪里、失败后如何恢复、不同会话怎样通信，以及插件和技能应当信任到什么程度。
 
 ### 已提升到双语主目录
 
 | 日期 | 资料 | 处理 |
 |:---:|:---|:---|
-| 2026-08-07 | [Claude Code v2.1.221–v2.1.224](https://github.com/anthropics/claude-code/releases/tag/v2.1.224) | 合并为一次 changelog 更新：self-hosted runner、跨机器会话消息、凭据遮蔽、权限传播，以及多项 sandbox/策略绕过修复共同构成一次控制面升级。 |
-| 2026-08-07 | [Codex 0.147.0](https://github.com/openai/codex/releases/tag/rust-v0.147.0) | 纳入：可移植 plugin 目录、MCP 2026-07-28、对话/技能导入、远端压缩、显式项目信任、脱敏和 plugin 网络 fail closed。 |
-| 2026-08-04 | [Warp Agent CLI](https://www.warp.dev/blog/introducing-the-warp-agent-cli-coding-agent) | 纳入：PTY multiplexer 成为 runtime 原语，支持交互程序、SSH 连续性、跨 harness 委派和本地到云端移交。 |
-| 2026-07-29 | [Deep Agents v0.7](https://www.langchain.com/blog/deep-agents-v0-7) | 作为近月补漏纳入：删除 prompt/todo 脚手架让基础输入下降约 65%，报告的多模型矩阵没有显示明确 reward 损失。 |
-| 2026-07-31 | [LoopsBench](https://arxiv.org/abs/2608.00267) | 纳入：依赖感知测试、持续回归义务和外层 continuation loop 直接评测长程循环工程。 |
-| 2026-08-01 | [Ledger](https://arxiv.org/abs/2608.00808) | 纳入：不增加模型调用的显式证据/依赖状态，在完整 SWE-bench Verified 上同时提分降本。 |
-| 2026-08-03 | [Rethinking Self-Evolving Agent Skills](https://arxiv.org/abs/2608.02636) | 纳入：实验把技能演化还原为稀疏、经验证筛选的搜索，且失败轨迹不可缺少。 |
-| 2026-08-04 | [The Resume Contract](https://arxiv.org/abs/2608.03836) | 纳入：形式化与实测共同说明 checkpoint API 不等于 exactly-once 的持久行为。 |
-| 2026-08-05 | [Active-SWE](https://arxiv.org/abs/2608.04682) | 纳入：拿掉 issue 报告后，主动发现缺陷显示为不同于 issue-conditioned repair 的能力。 |
-| 2026-08-05 | [SciCode-Verified](https://arxiv.org/abs/2608.04975) | 纳入：263 处基准缺陷与 192 次错误拒绝实质性逆转测得的准确率。 |
-| 2026-08-05 | [恶意 Skill 文件](https://arxiv.org/abs/2608.05223) | 带范围限制纳入：大规模合成实验把技能目录变成了可测量的供应链边界。 |
-| 2026-08-06 | [DCAS](https://arxiv.org/abs/2608.06113) | 带单基准限制纳入：轨迹微调会造成严重的 scaffold lock-in，跨 scaffold 数据可部分恢复迁移。 |
-| 2026-08-06 | [Learning Globally Reusable Skills](https://arxiv.org/abs/2608.06153) | 纳入：关系感知的聚合与 replay 检查，把技能演化推进为有回归测试的 skill bank 维护。 |
+| 2026-08-07 | [Claude Code v2.1.221–v2.1.224](https://github.com/anthropics/claude-code/releases/tag/v2.1.224) | 合并到更新日志条目：包括 self-hosted runner、跨机器会话消息、凭据遮蔽、权限传播，以及多项沙箱和策略绕过修复。 |
+| 2026-08-07 | [Codex 0.147.0](https://github.com/openai/codex/releases/tag/rust-v0.147.0) | 纳入：插件目录、MCP 2026-07-28、对话和技能导入、远端压缩、项目信任确认、凭据脱敏，以及插件策略失败时默认关闭网络。 |
+| 2026-08-04 | [Warp Agent CLI](https://www.warp.dev/blog/introducing-the-warp-agent-cli-coding-agent) | 纳入：以 PTY multiplexer 管理会话，支持交互式程序、SSH 连接延续、跨 harness 委派和本地到云端移交。 |
+| 2026-07-29 | [Deep Agents v0.7](https://www.langchain.com/blog/deep-agents-v0-7) | 作为近一个月的补漏纳入：删减系统提示和待办脚手架后，基础输入下降约 65%；报告中的多模型评测没有显示整体得分明显下降。 |
+| 2026-07-31 | [LoopsBench](https://arxiv.org/abs/2608.00267) | 纳入：用依赖感知测试、持续回归检查和外层续跑循环评测长期开发任务。 |
+| 2026-08-01 | [Ledger](https://arxiv.org/abs/2608.00808) | 纳入：在不增加模型调用的情况下记录证据、依赖和验证进度，并在完整 SWE-bench Verified 上同时提高成功率、降低成本。 |
+| 2026-08-03 | [Rethinking Self-Evolving Agent Skills](https://arxiv.org/abs/2608.02636) | 纳入：实验表明技能演化更接近由验证集筛选的稀疏搜索，失败轨迹在最终入选的技能中都发挥了作用。 |
+| 2026-08-04 | [The Resume Contract](https://arxiv.org/abs/2608.03836) | 纳入：形式化分析和框架实测都说明，提供 checkpoint API 并不等于能够保证恰好执行一次。 |
+| 2026-08-05 | [Active-SWE](https://arxiv.org/abs/2608.04682) | 纳入：拿掉 issue 报告后，主动发现缺陷表现为不同于“根据 issue 修补代码”的能力。 |
+| 2026-08-05 | [SciCode-Verified](https://arxiv.org/abs/2608.04975) | 纳入：修正 263 处基准缺陷，包括 192 次对正确答案的误判，显著改变了最终准确率。 |
+| 2026-08-05 | [恶意 Skill 文件](https://arxiv.org/abs/2608.05223) | 带限制纳入：这项合成实验测量了两个代码智能体 CLI 处理恶意技能文件时的表现。 |
+| 2026-08-06 | [DCAS](https://arxiv.org/abs/2608.06113) | 带限制纳入：实验只使用一个基准，但展示了轨迹微调造成的脚手架依赖，以及跨脚手架数据带来的迁移改善。 |
+| 2026-08-06 | [Learning Globally Reusable Skills](https://arxiv.org/abs/2608.06153) | 纳入：通过技能关系图、相关更新合并和历史任务回放，维护带有回归检查的技能库。 |
 
 7 月 24 日的[上下文工程新规则](https://claude.com/blog/the-new-rules-of-context-engineering-for-claude-5-generation-models)、6 月 2 日的[动态工作流模式](https://claude.com/blog/a-harness-for-every-task-dynamic-workflows-in-claude-code)和 6 月 1 日的[Claude Code Action 漏洞披露](https://flatt.tech/research/posts/poisoning-claude-code-one-github-issue-to-break-the-supply-chain/)也从旧候选日志提升到主目录，不重复算作 8 月新发现。
 
@@ -36,13 +42,13 @@
 
 | 资料 | 暂缓原因 |
 |:---|:---|
-| [TraceCompiler](https://arxiv.org/abs/2608.02680) | 工作流编译概念很强，但只测一个 intent，未计算离线成本，也未评测 schema drift 与语义保持。 |
-| [EA-Graph](https://arxiv.org/abs/2608.04278) | artifact-anchored verification memory 有价值，但只有 42 个生成会话，只测 provability classification。 |
-| [SuperScout](https://arxiv.org/abs/2608.04804) | verified handoff 值得关注，但 learned router 在 266 题切片上与 cheapest-fixer handoff 基线持平。 |
-| [OneDayAgent](https://arxiv.org/abs/2608.05013) | 可移植长程 harness 结果不错，但目前只有一个基准，且没有 workspace isolation。 |
-| [Verified Tool Calls](https://arxiv.org/abs/2608.02645) | verify-before-retry 模式清楚，但仅在两个模拟 workflow 与手写 verifier 上演示。 |
-| [Self-Evolving Coding Agents](https://arxiv.org/abs/2608.03392) | 分类学和阅读地图有用，但没有新实验，而主目录本身已经在组织 design space。 |
-| [LangSmith LLM Gateway](https://www.langchain.com/blog/langsmith-llm-gateway-runtime-controls-for-production-agents) | 外置 policy plane 很强；本周为避免与已有 runtime/control-plane 内容重复而暂缓。 |
+| [TraceCompiler](https://arxiv.org/abs/2608.02680) | 工作流编译的思路值得保留，但只测试了一个意图，未计算离线成本，也未评测接口变化和语义保持。 |
+| [EA-Graph](https://arxiv.org/abs/2608.04278) | 将验证结论绑定到具体工件的做法有价值，但实验只有 42 个生成会话，且只测试“结论是否有证据支持”。 |
+| [SuperScout](https://arxiv.org/abs/2608.04804) | 先探索、再把核验过的信息交给修复智能体的做法值得关注，但学习得到的路由器在 266 题切片上没有超过“固定选择最便宜修复器”的基线。 |
+| [OneDayAgent](https://arxiv.org/abs/2608.05013) | 同一套长程 harness 可以适配多个模型后端，但目前只测试了一个基准，也没有工作区隔离。 |
+| [Verified Tool Calls](https://arxiv.org/abs/2608.02645) | “验证后再重试”的模式很清楚，但只在两个模拟工作流和手写验证器上演示。 |
+| [Self-Evolving Coding Agents](https://arxiv.org/abs/2608.03392) | 分类框架和文献索引有用，但没有新增实验；主目录本身已经承担了组织设计空间的作用。 |
+| [LangSmith LLM Gateway](https://www.langchain.com/blog/langsmith-llm-gateway-runtime-controls-for-production-agents) | 外置策略控制面值得关注；本周为避免与已有运行时和控制面内容重复而暂缓。 |
 | [AgentCore OBO token exchange](https://aws.amazon.com/blogs/machine-learning/implement-on-behalf-of-token-exchange-for-multi-tenant-agents-with-amazon-bedrock-agentcore-gateway/) | 身份委派架构具体，保留给后续权限/身份专题。 |
 
 ## 快速结论
