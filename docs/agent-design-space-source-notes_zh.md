@@ -1,12 +1,49 @@
 # Agent Systems Design Space 新进展资料记录
 
-更新月份：2026-07
+基础检索窗口：2026-06-25 至 2026-07-30 · 最新增量：2026-08-07
 
 本页记录与 agent system design space 高度相关、且来源质量足够高的新进展。每条资料保留发布年月，方便后续持续追加和比较。
 
 英文版见 [agent-design-space-source-notes.md](./agent-design-space-source-notes.md)，其中收录了 2026-06-25 至 2026-07-30 窗口的候选资料（按 P0/P1/P2 分桶），并为每条标注了拟归入的 README 小节。
 
 本页汇总关于 agent system 设计空间的高信号资料，重点关注高层原则、运行时机制、权限与治理、上下文/记忆、工具连接、长程执行、多 agent 编排和评测安全。资料来自并行子代理检索后的人工合并与去重。
+
+## 每周增量：2026-07-31 至 2026-08-07
+
+本段保留下面已经完成的 7 月资料池，单独记录新一周的变化。本周最强的共同信号并不是某个模型发布，而是状态、恢复、跨会话协调与扩展信任正在变成显式的 harness contract。
+
+### 已提升到双语主目录
+
+| 日期 | 资料 | 处理 |
+|:---:|:---|:---|
+| 2026-08-07 | [Claude Code v2.1.221–v2.1.224](https://github.com/anthropics/claude-code/releases/tag/v2.1.224) | 合并为一次 changelog 更新：self-hosted runner、跨机器会话消息、凭据遮蔽、权限传播，以及多项 sandbox/策略绕过修复共同构成一次控制面升级。 |
+| 2026-08-07 | [Codex 0.147.0](https://github.com/openai/codex/releases/tag/rust-v0.147.0) | 纳入：可移植 plugin 目录、MCP 2026-07-28、对话/技能导入、远端压缩、显式项目信任、脱敏和 plugin 网络 fail closed。 |
+| 2026-08-04 | [Warp Agent CLI](https://www.warp.dev/blog/introducing-the-warp-agent-cli-coding-agent) | 纳入：PTY multiplexer 成为 runtime 原语，支持交互程序、SSH 连续性、跨 harness 委派和本地到云端移交。 |
+| 2026-07-29 | [Deep Agents v0.7](https://www.langchain.com/blog/deep-agents-v0-7) | 作为近月补漏纳入：删除 prompt/todo 脚手架让基础输入下降约 65%，报告的多模型矩阵没有显示明确 reward 损失。 |
+| 2026-07-31 | [LoopsBench](https://arxiv.org/abs/2608.00267) | 纳入：依赖感知测试、持续回归义务和外层 continuation loop 直接评测长程循环工程。 |
+| 2026-08-01 | [Ledger](https://arxiv.org/abs/2608.00808) | 纳入：不增加模型调用的显式证据/依赖状态，在完整 SWE-bench Verified 上同时提分降本。 |
+| 2026-08-03 | [Rethinking Self-Evolving Agent Skills](https://arxiv.org/abs/2608.02636) | 纳入：实验把技能演化还原为稀疏、经验证筛选的搜索，且失败轨迹不可缺少。 |
+| 2026-08-04 | [The Resume Contract](https://arxiv.org/abs/2608.03836) | 纳入：形式化与实测共同说明 checkpoint API 不等于 exactly-once 的持久行为。 |
+| 2026-08-05 | [Active-SWE](https://arxiv.org/abs/2608.04682) | 纳入：拿掉 issue 报告后，主动发现缺陷显示为不同于 issue-conditioned repair 的能力。 |
+| 2026-08-05 | [SciCode-Verified](https://arxiv.org/abs/2608.04975) | 纳入：263 处基准缺陷与 192 次错误拒绝实质性逆转测得的准确率。 |
+| 2026-08-05 | [恶意 Skill 文件](https://arxiv.org/abs/2608.05223) | 带范围限制纳入：大规模合成实验把技能目录变成了可测量的供应链边界。 |
+| 2026-08-06 | [DCAS](https://arxiv.org/abs/2608.06113) | 带单基准限制纳入：轨迹微调会造成严重的 scaffold lock-in，跨 scaffold 数据可部分恢复迁移。 |
+| 2026-08-06 | [Learning Globally Reusable Skills](https://arxiv.org/abs/2608.06153) | 纳入：关系感知的聚合与 replay 检查，把技能演化推进为有回归测试的 skill bank 维护。 |
+
+7 月 24 日的[上下文工程新规则](https://claude.com/blog/the-new-rules-of-context-engineering-for-claude-5-generation-models)、6 月 2 日的[动态工作流模式](https://claude.com/blog/a-harness-for-every-task-dynamic-workflows-in-claude-code)和 6 月 1 日的[Claude Code Action 漏洞披露](https://flatt.tech/research/posts/poisoning-claude-code-one-github-issue-to-break-the-supply-chain/)也从旧候选日志提升到主目录，不重复算作 8 月新发现。
+
+### 保留候选，暂不进入主目录
+
+| 资料 | 暂缓原因 |
+|:---|:---|
+| [TraceCompiler](https://arxiv.org/abs/2608.02680) | 工作流编译概念很强，但只测一个 intent，未计算离线成本，也未评测 schema drift 与语义保持。 |
+| [EA-Graph](https://arxiv.org/abs/2608.04278) | artifact-anchored verification memory 有价值，但只有 42 个生成会话，只测 provability classification。 |
+| [SuperScout](https://arxiv.org/abs/2608.04804) | verified handoff 值得关注，但 learned router 在 266 题切片上与 cheapest-fixer handoff 基线持平。 |
+| [OneDayAgent](https://arxiv.org/abs/2608.05013) | 可移植长程 harness 结果不错，但目前只有一个基准，且没有 workspace isolation。 |
+| [Verified Tool Calls](https://arxiv.org/abs/2608.02645) | verify-before-retry 模式清楚，但仅在两个模拟 workflow 与手写 verifier 上演示。 |
+| [Self-Evolving Coding Agents](https://arxiv.org/abs/2608.03392) | 分类学和阅读地图有用，但没有新实验，而主目录本身已经在组织 design space。 |
+| [LangSmith LLM Gateway](https://www.langchain.com/blog/langsmith-llm-gateway-runtime-controls-for-production-agents) | 外置 policy plane 很强；本周为避免与已有 runtime/control-plane 内容重复而暂缓。 |
+| [AgentCore OBO token exchange](https://aws.amazon.com/blogs/machine-learning/implement-on-behalf-of-token-exchange-for-multi-tenant-agents-with-amazon-bedrock-agentcore-gateway/) | 身份委派架构具体，保留给后续权限/身份专题。 |
 
 ## 快速结论
 
@@ -42,7 +79,7 @@
 | 2026-06 | [Orchestrate teams of Claude Code sessions](https://code.claude.com/docs/en/agent-teams) | 明确 agent teams 与 subagents 是两种不同原语：teammates 各自独立上下文、通过 mailbox 互发消息、共享一个带文件锁的任务列表（支持依赖与自主认领），状态落盘于 `~/.claude/teams/` 与 `~/.claude/tasks/`。信任边界：teammate 无法代替用户批准，被拒动作也不能转交其他 teammate 绕过。 | 把「子代理」与「对等代理团队」区分为两种编排原语并给出可验证的信任边界规则。 |
 | 2026-06 | [What's new in Claude Sonnet 5](https://platform.claude.com/docs/en/about-claude/models/whats-new-sonnet-5) | 手动 extended thinking（`thinking: {budget_tokens: N}`）被移除并返回 400；`temperature`/`top_p`/`top_k` 设为非默认值返回 400；新分词器使同样文本产生约多 30% token。 | 模型侧收回了 harness 原本持有的两个旋钮（思考预算、采样参数），推理预算控制权从 harness 上移到模型自身，是 harness 与模型边界在移动的直接证据。 |
 | 2026-06 | [Agentic coding and persistent returns to expertise](https://www.anthropic.com/research/claude-code-expertise) | 基于真实 Claude Code 使用数据：人类做约 70% 的规划决策但只做 20% 的执行决策；用户每发一条 prompt 平均触发约 10 个 Claude 动作，部分场景两次人工介入之间超过 100 个动作。 | 首份来自 Anthropic 的定量证据，说明「人类保留规划权、让渡执行权」是实际的分工形态，为人类控制面与监督成本提供实测锚点。 |
-| 2026-06 | [MCP 2026-07-28 规范转为无状态协议](https://blog.modelcontextprotocol.io/posts/sdk-betas-2026-07-28/) | 取消 `initialize` 握手与协议级 session，能力改由 `server/discover` 获取；新增 Multi Round Trip Requests（工具可返回 `InputRequiredResult` 在调用中途向用户追问）；新增用于网关路由的 `Mcp-Method`/`Mcp-Name` 传输头；roots、sampling、logging 标记为 deprecated。 | 工具生态层最大的一次结构性变更：MCP 从有状态会话协议转向可负载均衡的无状态 HTTP，直接影响工具接口与网关设计。 |
+| 2026-07 | [MCP 2026-07-28 规范转为无状态协议](https://blog.modelcontextprotocol.io/posts/sdk-betas-2026-07-28/) | 取消 `initialize` 握手与协议级 session，能力改由 `server/discover` 获取；新增 Multi Round Trip Requests（工具可返回 `InputRequiredResult` 在调用中途向用户追问）；新增用于网关路由的 `Mcp-Method`/`Mcp-Name` 传输头；roots、sampling、logging 标记为 deprecated。 | 工具生态层最大的一次结构性变更：MCP 从有状态会话协议转向可负载均衡的无状态 HTTP，直接影响工具接口与网关设计。 |
 | 2026-06 | [Enterprise-Managed Authorization: Zero-touch OAuth for MCP](https://blog.modelcontextprotocol.io/posts/enterprise-managed-auth/) | 客户端在 SSO 时从 IdP 拿到 Identity Assertion JWT Authorization Grant，再换取 MCP server 的 access token，按用户已有的组和角色授权，取消逐服务器的同意屏。 | MCP 授权决策权从「每个用户逐个点同意」上移到组织 IdP，是权限维度从个人授权走向组织策略的关键一步。 |
 | 2026-06 | [Amazon Bedrock AgentCore Harness GA](https://aws.amazon.com/blogs/machine-learning/amazon-bedrock-agentcore-harness-is-now-generally-available-go-from-idea-to-production-grade-agent-in-minutes/) | `CreateHarness` 与 `InvokeHarness` 两个 API 调用即可声明式定义 agent（模型、工具、skills、记忆策略、容器环境），底层封装 microVM 隔离 Runtime、托管 Memory、Gateway、沙箱 Browser、Code Interpreter、Identity token vault、Observability 七个原语。 | harness 从「开发者自己写的循环」变成「云厂商托管的配置对象」，是设计空间里一个全新的坐标轴：谁拥有 loop、环境与工具边界。 |
 | 2026-06 | [AgentCore policy 与 Guardrails](https://aws.amazon.com/about-aws/whats-new/2026/06/amazon-bedrock-agentcore-policy-guardrails-generally-available/) | policy 控制 agent 被授权执行哪些动作，Guardrails 实时检查每个被授权动作的输出与每次 gateway 调用的输入。关键点：评估发生在 gateway 边界、在 agent 代码之外，因此无论 agent 自主程度多高都能一致执行。 | 「在 agent 代码之外的边界上强制执行」是与 in-loop 权限检查截然不同的架构选择。 |

@@ -2,13 +2,50 @@
 
 # Agent Systems Design Space: Source Notes
 
-Update month: 2026-07 (sweep window 2026-06-25 to 2026-07-30)
+Base sweep: 2026-06-25 to 2026-07-30 · Latest addendum: 2026-08-07
 
 This page is the English counterpart to [agent-design-space-source-notes_zh.md](./agent-design-space-source-notes_zh.md). It records candidate sources for the catalogs in the main README, with the publication month kept per entry so the list can be extended and compared month over month.
 
 Everything below is a **candidate**, not a catalog entry. Each row carries the section it would go into, so promoting an entry is a copy into `README.md` and `README_zh.md` rather than a routing decision made twice.
 
 > **Maintainers:** this file is a research log. Catalog entries themselves belong in `README.md` and `README_zh.md`.
+
+## Weekly addendum — 2026-07-31 to 2026-08-07
+
+This addendum preserves the completed July sweep below and records the next weekly delta separately. The strongest signal this week is not a single model release: state, recovery, cross-session coordination, and extension trust are becoming explicit harness contracts.
+
+### Promoted to the bilingual catalog
+
+| Date | Source | Decision |
+|:---:|:---|:---|
+| 2026-08-07 | [Claude Code v2.1.221–v2.1.224](https://github.com/anthropics/claude-code/releases/tag/v2.1.224) | Promoted as one changelog update: self-hosted runners, cross-machine session messaging, credential masking, permission propagation, and several sandbox/policy escape fixes form one coherent control-plane change. |
+| 2026-08-07 | [Codex 0.147.0](https://github.com/openai/codex/releases/tag/rust-v0.147.0) | Promoted: portable plugin catalogs, MCP 2026-07-28 support, conversation/skill imports, remote compaction, explicit project trust, redaction, and fail-closed plugin networking. |
+| 2026-08-04 | [Warp Agent CLI](https://www.warp.dev/blog/introducing-the-warp-agent-cli-coding-agent) | Promoted: the PTY multiplexer is the runtime primitive, supporting interactive applications, SSH continuity, cross-harness delegation, and local-to-cloud handoff. |
+| 2026-07-29 | [Deep Agents v0.7](https://www.langchain.com/blog/deep-agents-v0-7) | Promoted as a one-month backfill: removing prompt and todo scaffolding cuts base input about 65% without a statistically clear reward loss across the reported model matrix. |
+| 2026-07-31 | [LoopsBench](https://arxiv.org/abs/2608.00267) | Promoted: dependency-aware tests, persistent regression obligations, and an outer continuation loop directly evaluate long-horizon loop engineering. |
+| 2026-08-01 | [Ledger](https://arxiv.org/abs/2608.00808) | Promoted: explicit evidence/dependency state improves full SWE-bench Verified results while reducing cost, without another model call. |
+| 2026-08-03 | [Rethinking Self-Evolving Agent Skills](https://arxiv.org/abs/2608.02636) | Promoted: the experiments resolve skill evolution into sparse, validation-filtered search in which failed trajectories matter. |
+| 2026-08-04 | [The Resume Contract](https://arxiv.org/abs/2608.03836) | Promoted: formal and empirical tests show that checkpoint APIs alone do not guarantee exactly-once durable behavior. |
+| 2026-08-05 | [Active-SWE](https://arxiv.org/abs/2608.04682) | Promoted: removing the issue report exposes proactive bug discovery as distinct from issue-conditioned repair. |
+| 2026-08-05 | [SciCode-Verified](https://arxiv.org/abs/2608.04975) | Promoted: 263 benchmark defects and 192 false rejections materially reverse measured accuracy. |
+| 2026-08-05 | [Malicious Skill Files](https://arxiv.org/abs/2608.05223) | Promoted with scope caveats: a large synthetic study makes the skills directory a measurable supply-chain boundary. |
+| 2026-08-06 | [DCAS](https://arxiv.org/abs/2608.06113) | Promoted with its single-benchmark limitation: trajectory tuning can create severe scaffold lock-in; cross-scaffold data partly restores transfer. |
+| 2026-08-06 | [Learning Globally Reusable Skills](https://arxiv.org/abs/2608.06153) | Promoted: relation-aware consolidation and replay checking move skill evolution toward maintaining a regression-tested skill bank. |
+
+The July 24 [new context-engineering rules](https://claude.com/blog/the-new-rules-of-context-engineering-for-claude-5-generation-models), June 2 [dynamic-workflow patterns](https://claude.com/blog/a-harness-for-every-task-dynamic-workflows-in-claude-code), and June 1 [Claude Code Action disclosure](https://flatt.tech/research/posts/poisoning-claude-code-one-github-issue-to-break-the-supply-chain/) were also promoted from the earlier candidate log rather than duplicated as August discoveries.
+
+### Retained candidates, not catalog entries
+
+| Source | Why retained rather than promoted |
+|:---|:---|
+| [TraceCompiler](https://arxiv.org/abs/2608.02680) | Strong workflow-compilation idea, but one intent, unmeasured offline cost, and no schema-drift or semantic-preservation study. |
+| [EA-Graph](https://arxiv.org/abs/2608.04278) | Useful artifact-anchored verification memory, but only 42 generated sessions and provability classification rather than repair or efficiency. |
+| [SuperScout](https://arxiv.org/abs/2608.04804) | The verified handoff is promising, but the learned router ties the cheapest-fixer handoff baseline on the reported 266-task slice. |
+| [OneDayAgent](https://arxiv.org/abs/2608.05013) | A portable long-horizon harness result, but currently one benchmark and no workspace isolation. |
+| [Verified Tool Calls](https://arxiv.org/abs/2608.02645) | Clear verify-before-retry pattern, currently demonstrated only on two simulated workflows with hand-written verifiers. |
+| [Self-Evolving Coding Agents](https://arxiv.org/abs/2608.03392) | Useful taxonomy and reading map, but no new experiment; the catalog already supplies its own design-space organization. |
+| [LangSmith LLM Gateway](https://www.langchain.com/blog/langsmith-llm-gateway-runtime-controls-for-production-agents) | Strong external policy-plane candidate; held to avoid duplicating the catalog's existing runtime/control-plane coverage this week. |
+| [AgentCore OBO token exchange](https://aws.amazon.com/blogs/machine-learning/implement-on-behalf-of-token-exchange-for-multi-tenant-agents-with-amazon-bedrock-agentcore-gateway/) | Good concrete identity-delegation architecture; retained for a future permissions/identity-focused sweep. |
 
 ## Quick conclusions
 
@@ -34,7 +71,7 @@ Three themes run through the rest:
 
 | Date | Resource | Core content | Target section |
 |:---:|:---|:---|:---|
-| 2026-07-24 | [The new rules of context engineering for Claude 5 generation models](https://claude.com/blog/the-new-rules-of-context-engineering-for-claude-5-generation-models) | Anthropic's own account of what changed for the Claude 5 generation: the team deleted **over 80% of Claude Code's system prompt** with no measurable regression on coding evals, replaced prescriptive rules ("never write multi-paragraph docstrings") with judgment-inviting guidance ("write code that reads like the surrounding code"), and moved verification guidance out of the base prompt into selectable skills and deferred-loading tools. Argues expressive tool interfaces beat usage examples, and that automatic memory has displaced hand-maintained CLAUDE.md. | `#### Research & Engineering Blogs` |
+| 2026-07-24 | [The new rules of context engineering for Claude 5 generation models](https://claude.com/blog/the-new-rules-of-context-engineering-for-claude-5-generation-models) | Anthropic's own account of what changed for the Claude 5 generation: the team deleted **over 80% of Claude Code's system prompt** with no measurable regression on coding evals, replaced prescriptive rules ("never write multi-paragraph docstrings") with judgment-inviting guidance ("write code that reads like the surrounding code"), and moved verification guidance out of the base prompt into selectable skills and deferred-loading tools. Argues expressive tool interfaces beat usage examples, and that automatic memory has displaced using CLAUDE.md as a manually appended memory store. | `#### Research & Engineering Blogs` |
 | 2026-07-16 | [How Anthropic runs large-scale code migrations with Claude Code](https://claude.com/blog/ai-code-migration) | A Bun migration produced roughly a million lines in under two weeks against 5.9B uncached input tokens and 690M output tokens (around $165,000 at API pricing); a Python-to-TypeScript port covered 165,000 lines over a weekend, fanning out 12 subagents for the main migration. Six-stage pipeline: rulebook and dependency map, stress-test on samples, parallel translation whose completion signal is **file existence on disk**, compile loops with fan-out fixer agents, smoke tests categorized by root cause, then behavior verification. Adversarial reviewers run in separate contexts; a build daemon serializes expensive recompiles. Shows verification, not generation, becoming the rate limiter at scale. | `#### Research & Engineering Blogs` |
 | 2026-07-21 | [How Anthropic secures its AI-native software development lifecycle](https://claude.com/blog/how-anthropic-secures-its-ai-native-software-development-lifecycle) | Anthropic's Deputy CISO on the controls wrapped around agents internally: developers work on remote VMs behind strict egress allowlists so a prompt-injected agent cannot reach arbitrary destinations; narrowly scoped RAG-backed review agents each own one security area; the incident-response agent can only write new docs, post in company channels, and read production logs. Risk-tiered codebases, a shadow mode where new reviewers only comment until they earn trust, human sampling of automated approvals, every agent action logged to the SIEM. About 54% of PRs receive substantive automated review comments. | `#### Research & Engineering Blogs` |
 | 2026-07-24 | [Introducing Claude Opus 5](https://www.anthropic.com/news/claude-opus-5) | Lands in Claude Code v2.1.219 with a 1M context window at $5/$25 per Mtok, plus a 2x-cost fast mode running roughly 2.5x faster. Two harness-relevant API additions in beta: mid-conversation tool changes, and automatic fallback routing. | `#### Research & Engineering Blogs` |
@@ -159,7 +196,7 @@ These fall outside 2026-06-25 to 2026-07-30 but are absent from the catalogs, an
 | Date | Resource | Why it matters | Target section |
 |:---:|:---|:---|:---|
 | 2026-06-02 | [A harness for every task: dynamic workflows in Claude Code](https://claude.com/blog/a-harness-for-every-task-dynamic-workflows-in-claude-code) | Names six orchestration patterns (classify-and-act, fan-out-and-synthesize, adversarial verification, generate-and-filter, tournament, loop-until-done) and three single-context failure modes it exists to fix: agentic laziness, self-preferential bias, and goal drift. The README links the `docs/en/workflows` page but not this, and Anthropic's own docs cite it as the companion read. | `#### Research & Engineering Blogs` |
-| 2026-06-01 | [Poisoning Claude Code: One GitHub Issue to Break the Supply Chain](https://flatt.tech/research/posts/poisoning-claude-code-one-github-issue-to-break-the-supply-chain/) | GMO Flatt Security (RyotaK): `checkWritePermissions` trusted any GitHub App, so an attacker-installed app plus a single issue could chain a low-permission triage workflow into an elevated tag-mode one, then have Claude read `/proc/self/environ` for OIDC credentials and exfiltrate them via issue updates. Fixed in `claude-code-action` v1.0.94. The most consequential Claude-Code-specific disclosure of 2026, and the section has no entry for it. | `### Security Research & Incidents` |
+| 2026-06-01 | [Poisoning Claude Code: One GitHub Issue to Break the Supply Chain](https://flatt.tech/research/posts/poisoning-claude-code-one-github-issue-to-break-the-supply-chain/) | GMO Flatt Security (RyotaK) documents two potential routes rather than a completed compromise: agent mode trusted any GitHub App actor; separately, an official triage example could be chained into privileged tag mode. Prompt-injected Claude could then read OIDC request credentials from `/proc/self/environ` and exfiltrate them via issue updates. Fixed by `claude-code-action` v1.0.94. | `### Security Research & Incidents` |
 | 2026-06-18 | [Steering Claude Code: when to use CLAUDE.md, skills, hooks, and subagents](https://claude.com/blog/steering-claude-code-skills-hooks-rules-subagents-and-more) | The canonical official decision guide across the extensibility surfaces. | `#### Research & Engineering Blogs` |
 | 2026-05-25 | [Harness, Scaffold, and the AI Agent Terms Worth Getting Right](https://huggingface.co/blog/agent-glossary) | Separates model, scaffold (system prompt, tool descriptions, parsing, inter-step memory) and harness (the execution loop), then situates policy, tools, skills, subagents, and context engineering around them. Directly useful for terminology framing. | `### General Harness Engineering Design Space Resources` |
 | 2026-06-17 | [Bringing more agent harnesses and frameworks to Cloudflare, starting with Flue](https://blog.cloudflare.com/agents-platform-flue-sdk/) | A clean three-layer split (framework Flue / harness Pi / runtime Agents SDK) plus Durable Streams, an append-only ledger of every prompt, tool response, and model choice, with `runFiber()`, `stash()`, and `onFiberRecovered()` for exact-checkpoint resumption. The repo has no Cloudflare entry at all. | `### Runtime & Sandbox Infrastructure` |
