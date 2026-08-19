@@ -753,7 +753,7 @@ Claude Code 回答了每个生产级编码智能体都必须面对的**四个设
 
 ---
 
-[![Star History Chart](https://api.star-history.com/svg?repos=VILA-Lab/Dive-into-Claude-Code&type=Date)](https://www.star-history.com/#VILA-Lab/Dive-into-Claude-Code&Date)
+[![Star History Chart](https://star-history.dera.page/svg?repos=VILA-Lab/Dive-into-Claude-Code&type=Date)](https://star-history.dera.page/#VILA-Lab/Dive-into-Claude-Code&Date)
 
 ## 参与贡献
 
