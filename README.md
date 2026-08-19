@@ -752,7 +752,13 @@ A broader map of the agent design space surrounding Claude Code. The [Cross-Syst
 </details>
 
 ---
-[![Star History Chart](https://api.star-history.com/svg?repos=VILA-Lab/Dive-into-Claude-Code&type=Date)](https://www.star-history.com/#VILA-Lab/Dive-into-Claude-Code&Date)
+<a href="https://star-history.dera.page/#VILA-Lab/Dive-into-Claude-Code">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://star-history.dera.page/svg?repos=VILA-Lab/Dive-into-Claude-Code&type=Date&theme=dark" />
+    <source media="(prefers-color-scheme: light)" srcset="https://star-history.dera.page/svg?repos=VILA-Lab/Dive-into-Claude-Code&type=Date" />
+    <img alt="Star History Chart" src="https://star-history.dera.page/svg?repos=VILA-Lab/Dive-into-Claude-Code&type=Date" />
+  </picture>
+</a>
 
 ## Contributing
 
